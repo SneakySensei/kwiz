@@ -27,6 +27,11 @@ const Page = styled.main`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+
+    @media screen and (max-width: 450px) {
+      padding: 2rem;
+    }
+
     header {
       margin-bottom: 2.5rem;
       h1 {
@@ -152,23 +157,23 @@ const QuizScreen = () => {
           <h1>Question {currentQuestion + 1} of 20</h1>
           <span>{unescape(quizList[currentQuestion].category)}</span>
           <section>
-            {quizList[currentQuestion].difficulty == "easy" && (
+            {quizList[currentQuestion].difficulty === "easy" && (
               <FaStar color="#000000" size={14} />
             )}
-            {quizList[currentQuestion].difficulty == "medium" && (
+            {quizList[currentQuestion].difficulty === "medium" && (
               <FaStar color="#000000" size={14} />
             )}
-            {quizList[currentQuestion].difficulty == "medium" && (
+            {quizList[currentQuestion].difficulty === "medium" && (
               <FaStar color="#000000" size={14} />
             )}
 
-            {quizList[currentQuestion].difficulty == "hard" && (
+            {quizList[currentQuestion].difficulty === "hard" && (
               <FaStar color="#000000" size={14} />
             )}
-            {quizList[currentQuestion].difficulty == "hard" && (
+            {quizList[currentQuestion].difficulty === "hard" && (
               <FaStar color="#000000" size={14} />
             )}
-            {quizList[currentQuestion].difficulty == "hard" && (
+            {quizList[currentQuestion].difficulty === "hard" && (
               <FaStar color="#000000" size={14} />
             )}
           </section>

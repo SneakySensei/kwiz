@@ -13,6 +13,12 @@ const QuestionContainer = styled.section`
 
     button {
       font-size: 11pt;
+      padding-top: 0.2rem;
+      padding-bottom: 0.2rem;
+      @media screen and (max-width: 450px) {
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
+      }
     }
   }
 `;
