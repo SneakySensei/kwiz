@@ -65,7 +65,7 @@ const Question = ({
 
   useEffect(() => {
     setOptionList(shuffle(options));
-  }, []);
+  }, [shuffle]);
 
   return (
     <QuestionContainer>
