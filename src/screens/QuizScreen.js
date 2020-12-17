@@ -2,7 +2,9 @@ import { useState } from "react";
 import styled from "styled-components";
 import { FaStar } from "react-icons/fa";
 
-import questions from "../models/questions.json";
+import quizList from "../models/questions.json";
+
+import Question from "../components/Question";
 
 const Progress = styled.div`
   background-color: #a9aaa9;
@@ -49,22 +51,6 @@ const Page = styled.main`
       }
     }
 
-    .question {
-      font-size: 14pt;
-
-      .options {
-        margin-top: 2rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        grid-auto-rows: 1fr;
-        gap: 2rem;
-
-        button {
-          font-size: 11pt;
-        }
-      }
-    }
-
     .prompt {
       text-align: center;
 
@@ -76,6 +62,10 @@ const Page = styled.main`
       button {
         padding: 0.5rem 1rem;
         font-size: 12pt;
+      }
+      span {
+        font-size: 16pt;
+        font-weight: 500;
       }
     }
 
@@ -131,42 +121,108 @@ const Score = styled.div`
 `;
 
 const QuizScreen = () => {
-  const [progress, setProgress] = useState(80.0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [wrongAnswers, setWrongAnswers] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [hasAnswered, setHasAnswered] = useState(false);
+  const [message, setMessage] = useState("Correct!");
+
+  const handleCorrectAnswer = () => {
+    setCorrectAnswers(correctAnswers + 1);
+    setHasAnswered(true);
+    setMessage("Correct!");
+  };
+  const handleWrongAnswer = () => {
+    setWrongAnswers(wrongAnswers + 1);
+    setHasAnswered(true);
+    setMessage("Sorry!");
+  };
+
+  const handleNext = (e) => {
+    e.preventDefault();
+    setCurrentQuestion(currentQuestion + 1);
+    setHasAnswered(false);
+  };
 
   return (
     <Page>
-      <Progress percent={progress} />
+      <Progress percent={((currentQuestion + 1) * 100) / quizList.length} />
       <main>
         <header>
-          <h1>Question 16 of 20</h1>
-          <span>Entertainment: Board Games</span>
+          <h1>Question {currentQuestion + 1} of 20</h1>
+          <span>{unescape(quizList[currentQuestion].category)}</span>
           <section>
-            <FaStar color="#000000" size={14} />
-            <FaStar color="#000000" size={14} />
-            <FaStar color="#000000" size={14} />
+            {quizList[currentQuestion].difficulty == "easy" && (
+              <FaStar color="#000000" size={14} />
+            )}
+            {quizList[currentQuestion].difficulty == "medium" && (
+              <FaStar color="#000000" size={14} />
+            )}
+            {quizList[currentQuestion].difficulty == "medium" && (
+              <FaStar color="#000000" size={14} />
+            )}
+
+            {quizList[currentQuestion].difficulty == "hard" && (
+              <FaStar color="#000000" size={14} />
+            )}
+            {quizList[currentQuestion].difficulty == "hard" && (
+              <FaStar color="#000000" size={14} />
+            )}
+            {quizList[currentQuestion].difficulty == "hard" && (
+              <FaStar color="#000000" size={14} />
+            )}
           </section>
         </header>
-        <section className="question">
-          At the start of a standard game of Monopoly, if you throw a double
-          six, which square would you land on?
-          <div className="options">
-            <button>Chance</button>
-            <button>Water Works</button>
-            <button>Electric Company</button>
-            <button>Community Chest</button>
-          </div>
-        </section>
-        <section className="prompt">
-          <div>Correct!</div>
-          <button>Next Question</button>
-        </section>
+        <Question
+          key={currentQuestion}
+          question={quizList[currentQuestion].question}
+          options={[
+            ...quizList[currentQuestion].incorrect_answers,
+            quizList[currentQuestion].correct_answer,
+          ]}
+          correctOption={quizList[currentQuestion].correct_answer}
+          handleCorrectAnswer={handleCorrectAnswer}
+          handleWrongAnswer={handleWrongAnswer}
+        />
+        {hasAnswered && (
+          <section className="prompt">
+            <div>{message}</div>
+            {currentQuestion + 1 < quizList.length && (
+              <button onClick={handleNext}>Next Question</button>
+            )}
+            {currentQuestion + 1 >= quizList.length && (
+              <span>Quiz Completed.</span>
+            )}
+          </section>
+        )}
         <div className="spacer"></div>
         <footer>
           <section>
-            <span>Score: 69%</span>
-            <span>Max Score: 75%</span>
+            <span>
+              Score:{" "}
+              {(
+                (correctAnswers * 100) / (correctAnswers + wrongAnswers) || 0
+              ).toFixed(0)}
+              %
+            </span>
+            <span>
+              Max Score:{" "}
+              {(
+                ((quizList.length - wrongAnswers) * 100) /
+                quizList.length
+              ).toFixed(0)}
+              %
+            </span>
           </section>
-          <Score minScore={50} currentScore={69} maxScore={75}>
+          <Score
+            minScore={(correctAnswers * 100) / quizList.length}
+            currentScore={
+              (correctAnswers * 100) / (correctAnswers + wrongAnswers)
+            }
+            maxScore={
+              ((quizList.length - wrongAnswers) * 100) / quizList.length
+            }
+          >
             <div className="min"></div>
             <div className="current"></div>
             <div className="max"></div>
